@@ -1,26 +1,36 @@
-struct Token {
-  kind: TokenKind,
-  literal: String,
+use std::fmt::write;
+
+#[derive(PartialEq, Debug)]
+pub struct Token {
+    pub kind: TokenKind,
+    pub literal: String,
 }
 
-enum TokenKind {
-  Illegal,
-  Eof,
+#[derive(PartialEq, Debug)]
+pub enum TokenKind {
+    Illegal,
+    Eof,
 
-  Ident,
-  Int,
+    Ident,
+    Int,
 
-  Assign,
-  Plus,
+    Assign,
+    Plus,
 
-  Comma,
-  Semicolon,
+    Comma,
+    Semicolon,
 
-  Lparen,
-  Rparen,
-  Lbrace,
-  Rbrace,
+    Lparen,
+    Rparen,
+    Lbrace,
+    Rbrace,
 
-  Function,
-  Let,
+    Function,
+    Let,
+}
+
+impl std::fmt::Display for TokenKind {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.to_string())
+    }
 }
