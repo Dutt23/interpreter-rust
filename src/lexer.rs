@@ -1,4 +1,6 @@
-use crate::token::Token;
+use std::str::FromStr;
+
+use crate::token::{Token, TokenKind};
 
 struct Lexer {
     input: Vec<char>,
@@ -12,12 +14,12 @@ impl Lexer {
         let mut lex = Lexer {
             input: input.chars().collect(),
             position: 0,
-            read_position: 1,
+            read_position: 0,
             ch: Default::default(),
         };
 
         lex.read_char();
-        
+
         lex
     }
 
@@ -25,14 +27,20 @@ impl Lexer {
         if self.read_position >= self.input.len() {
             self.ch = '\0';
         } else {
-          self.ch = self.input[self.read_position]
+            self.ch = self.input[self.read_position]
         }
         self.position = self.read_position;
-        self.position += 1;
+        self.read_position += 1;
     }
 
-    fn next_token(&self) -> Token {
-        todo!()
+    fn next_token(&mut self) -> Token {
+        let tok = Token {
+            kind: TokenKind::from_str(&self.ch.to_string()).unwrap(),
+            literal: self.ch.to_string(),
+        };
+        self.read_char();
+
+        tok
     }
 }
 
@@ -53,51 +61,43 @@ mod test {
             },
             Token {
                 kind: TokenKind::Plus,
-                literal: "=".to_string(),
+                literal: "+".to_string(),
             },
             Token {
                 kind: TokenKind::Lparen,
-                literal: "=".to_string(),
+                literal: "(".to_string(),
             },
             Token {
                 kind: TokenKind::Rparen,
-                literal: "=".to_string(),
+                literal: ")".to_string(),
             },
             Token {
                 kind: TokenKind::Lbrace,
-                literal: "=".to_string(),
+                literal: "{".to_string(),
             },
             Token {
                 kind: TokenKind::Rbrace,
-                literal: "=".to_string(),
+                literal: "}".to_string(),
             },
             Token {
                 kind: TokenKind::Comma,
-                literal: "=".to_string(),
+                literal: ",".to_string(),
             },
             Token {
                 kind: TokenKind::Semicolon,
-                literal: "=".to_string(),
+                literal: ";".to_string(),
             },
             Token {
                 kind: TokenKind::Eof,
-                literal: "=".to_string(),
+                literal: "\0".to_string(),
             },
         ];
 
-        let lexer = Lexer::new(input);
-        for (idx, exp_token) in expected.into_iter().enumerate() {
+        let mut lexer = Lexer::new(input);
+        for exp_token in expected.into_iter() {
             let recv_token = lexer.next_token();
-            assert_eq!(
-                exp_token.kind, recv_token.kind,
-                "tests({idx}) kind not equal , expected = {} but got actual = {}",
-                exp_token.kind, recv_token.kind
-            );
-            assert_eq!(
-                exp_token.literal, recv_token.literal,
-                "tests({idx}) literal not equal , expected = {} but got actual = {}",
-                exp_token.literal, recv_token.literal
-            );
+            assert_eq!(exp_token.kind, recv_token.kind);
+            assert_eq!(exp_token.literal, recv_token.literal);
         }
     }
 }
