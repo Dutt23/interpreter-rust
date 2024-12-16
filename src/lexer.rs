@@ -2,14 +2,36 @@ use crate::token::Token;
 
 struct Lexer {
     input: Vec<char>,
+    position: usize,
+    read_position: usize,
+    ch: char,
 }
 
 impl Lexer {
-    fn new(input: Vec<char>) -> Self {
-        Self { input }
+    fn new(input: &str) -> Self {
+        let mut lex = Lexer {
+            input: input.chars().collect(),
+            position: 0,
+            read_position: 1,
+            ch: Default::default(),
+        };
+
+        lex.read_char();
+        
+        lex
     }
 
-    fn next_token(self) -> Token {
+    fn read_char(&mut self) {
+        if self.read_position >= self.input.len() {
+            self.ch = '\0';
+        } else {
+          self.ch = self.input[self.read_position]
+        }
+        self.position = self.read_position;
+        self.position += 1;
+    }
+
+    fn next_token(&self) -> Token {
         todo!()
     }
 }
