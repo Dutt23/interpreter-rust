@@ -24,6 +24,9 @@ pub enum TokenKind {
     Lt,
     Gt,
 
+    Eq,
+    NotEq,
+
     Comma,
     Semicolon,
 
@@ -54,6 +57,51 @@ impl TokenKind {
             _ => TokenKind::Ident,
         }
     }
+
+    pub fn to_literal(&self, literal: char) -> String {
+        if &Self::Eq == self {
+            return "==".to_string();
+        } else if &Self::NotEq == self {
+            return "!=".to_string();
+        }
+        literal.to_string()
+    }
+
+    pub fn to_tok(s: &str, next_char: &str) -> Self {
+        match s {
+            "=" => {
+                if next_char == "=" {
+                    return self::TokenKind::Eq;
+                }
+                self::TokenKind::Assign
+            }
+            "+" => self::TokenKind::Plus,
+            "(" => self::TokenKind::Lparen,
+            ")" => self::TokenKind::Rparen,
+            "{" => self::TokenKind::Lbrace,
+            "}" => self::TokenKind::Rbrace,
+            "fn" => self::TokenKind::Function,
+            "let" => self::TokenKind::Let,
+            "if" => self::TokenKind::If,
+            "else" => self::TokenKind::Else,
+            "return" => self::TokenKind::Return,
+            "," => self::TokenKind::Comma,
+            ";" => self::TokenKind::Semicolon,
+            "\0" => self::TokenKind::Eof,
+            "/" => self::TokenKind::Slash,
+            "-" => self::TokenKind::Minus,
+            "!" => {
+                if next_char == "=" {
+                    return self::TokenKind::NotEq;
+                }
+                self::TokenKind::Bang
+            }
+            "*" => self::TokenKind::Asterisk,
+            "<" => self::TokenKind::Lt,
+            ">" => self::TokenKind::Gt,
+            _ => self::TokenKind::Illegal,
+        }
+    }
 }
 
 impl std::fmt::Display for TokenKind {
@@ -68,6 +116,8 @@ impl FromStr for TokenKind {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
             "=" => Ok(self::TokenKind::Assign),
+            "==" => Ok(self::TokenKind::Eq),
+            "!=" => Ok(self::TokenKind::NotEq),
             "+" => Ok(self::TokenKind::Plus),
             "(" => Ok(self::TokenKind::Lparen),
             ")" => Ok(self::TokenKind::Rparen),

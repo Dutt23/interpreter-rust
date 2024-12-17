@@ -23,6 +23,14 @@ impl Lexer {
         lex
     }
 
+    fn peek_char(&self) -> char {
+        if self.read_position >= self.input.len() {
+            '\0'
+        } else {
+            self.input[self.read_position]
+        }
+    }
+
     fn read_char(&mut self) {
         if self.read_position >= self.input.len() {
             self.ch = '\0';
@@ -33,13 +41,23 @@ impl Lexer {
         self.read_position += 1;
     }
 
+    fn should_roll_fwd(tk: &TokenKind) -> bool {
+        tk == &TokenKind::Eq || tk == &TokenKind::NotEq
+    }
+
     fn next_token(&mut self) -> Token {
         self.skip_whitespace();
+        let next_char = &self.peek_char().to_string();
+        let kind = TokenKind::to_tok(&self.ch.to_string(), next_char);
+        let literal = kind.to_literal(self.ch);
         let tok = Token {
-            kind: TokenKind::from_str(&self.ch.to_string()).unwrap(),
-            literal: self.ch.to_string(),
+            kind,
+            literal
         };
 
+        if Self::should_roll_fwd(&tok.kind) {
+            self.read_char();
+        }
         // Clean this later
         if tok.kind == TokenKind::Illegal && Self::is_letter(self.ch) {
             let literal = self.read_identifier();
@@ -164,6 +182,8 @@ mod test {
       } else {
        return false;
        }
+       10 == 10;
+       10 != 9;
       "#;
 
         let mut five_ident = get_ident("5", "five");
@@ -385,6 +405,38 @@ mod test {
             Token {
                 kind: TokenKind::Rbrace,
                 literal: "}".to_string(),
+            },
+            Token {
+                kind: TokenKind::Int,
+                literal: "10".to_string(),
+            },
+            Token {
+                kind: TokenKind::Eq,
+                literal: "==".to_string(),
+            },
+            Token {
+                kind: TokenKind::Int,
+                literal: "10".to_string(),
+            },
+            Token {
+                kind: TokenKind::Semicolon,
+                literal: ";".to_string(),
+            },
+            Token {
+                kind: TokenKind::Int,
+                literal: "10".to_string(),
+            },
+            Token {
+                kind: TokenKind::NotEq,
+                literal: "!=".to_string(),
+            },
+            Token {
+                kind: TokenKind::Int,
+                literal: "9".to_string(),
+            },
+            Token {
+                kind: TokenKind::Semicolon,
+                literal: ";".to_string(),
             },
         ];
         five_ident.append(&mut expected);
