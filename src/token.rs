@@ -29,6 +29,16 @@ pub enum TokenKind {
     Let,
 }
 
+impl TokenKind {
+    pub fn lookup_ident(str: &str) -> TokenKind {
+        match str {
+            "fn" => TokenKind::Function,
+            "let" => TokenKind::Let,
+            _ => TokenKind::Ident,
+        }
+    }
+}
+
 impl std::fmt::Display for TokenKind {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.to_string())
