@@ -156,6 +156,8 @@ mod test {
       }
 
       let result = add(five, ten);
+      !-/*5;
+      5 < 10 > 5;
       "#;
 
         let mut five_ident = get_ident("5", "five");
@@ -262,6 +264,54 @@ mod test {
                 kind: TokenKind::Semicolon,
                 literal: ";".to_string(),
             },
+            Token {
+                kind: TokenKind::Bang,
+                literal: "!".to_string(),
+            },
+            Token {
+                kind: TokenKind::Minus,
+                literal: "-".to_string(),
+            },
+            Token {
+                kind: TokenKind::Slash,
+                literal: "/".to_string(),
+            },
+            Token {
+                kind: TokenKind::Asterisk,
+                literal: "*".to_string(),
+            },
+            Token {
+                kind: TokenKind::Int,
+                literal: "5".to_string(),
+            },
+            Token {
+                kind: TokenKind::Semicolon,
+                literal: ";".to_string(),
+            },
+            Token {
+                kind: TokenKind::Int,
+                literal: "5".to_string(),
+            },
+            Token {
+                kind: TokenKind::Lt,
+                literal: "<".to_string(),
+            },
+            Token {
+                kind: TokenKind::Int,
+                literal: "10".to_string(),
+            },
+            Token {
+                kind: TokenKind::Gt,
+                literal: ">".to_string(),
+            },
+            Token {
+                kind: TokenKind::Int,
+                literal: "5".to_string(),
+            },
+            Token {
+                kind: TokenKind::Semicolon,
+                literal: ";".to_string(),
+            },
         ];
         five_ident.append(&mut expected);
         compare(five_ident, input);
@@ -272,7 +322,7 @@ mod test {
         let mut count = 0;
         let count_exp = expected.len();
         for (idx, exp_token) in expected.into_iter().enumerate() {
-          count += 1;
+            count += 1;
             let recv_token = lexer.next_token();
             assert_eq!(
                 exp_token.kind, recv_token.kind,

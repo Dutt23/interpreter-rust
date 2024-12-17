@@ -16,6 +16,13 @@ pub enum TokenKind {
 
     Assign,
     Plus,
+    Minus,
+    Bang,
+    Asterisk,
+    Slash,
+
+    Lt,
+    Gt,
 
     Comma,
     Semicolon,
@@ -61,6 +68,12 @@ impl FromStr for TokenKind {
             "," => Ok(self::TokenKind::Comma),
             ";" => Ok(self::TokenKind::Semicolon),
             "\0" => Ok(self::TokenKind::Eof),
+            "/" => Ok(self::TokenKind::Slash),
+            "-" => Ok(self::TokenKind::Minus),
+            "!" => Ok(self::TokenKind::Bang),
+            "*" => Ok(self::TokenKind::Asterisk),
+            "<" => Ok(self::TokenKind::Lt),
+            ">" => Ok(self::TokenKind::Gt),
             _ => Ok(self::TokenKind::Illegal),
         }
     }
