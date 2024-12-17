@@ -142,13 +142,7 @@ mod test {
                 literal: "\0".to_string(),
             },
         ];
-
-        let mut lexer = Lexer::new(input);
-        for exp_token in expected.into_iter() {
-            let recv_token = lexer.next_token();
-            assert_eq!(exp_token.kind, recv_token.kind);
-            assert_eq!(exp_token.literal, recv_token.literal);
-        }
+        compare(expected, input);
     }
 
     #[test]
@@ -270,9 +264,15 @@ mod test {
             },
         ];
         five_ident.append(&mut expected);
+        compare(five_ident, input);
+    }
 
+    fn compare(expected: Vec<Token>, input: &str) {
         let mut lexer = Lexer::new(input);
-        for (idx, exp_token) in five_ident.into_iter().enumerate() {
+        let mut count = 0;
+        let count_exp = expected.len();
+        for (idx, exp_token) in expected.into_iter().enumerate() {
+          count += 1;
             let recv_token = lexer.next_token();
             assert_eq!(
                 exp_token.kind, recv_token.kind,
@@ -285,6 +285,7 @@ mod test {
                 idx, exp_token.literal, recv_token.literal
             );
         }
+        assert_eq!(count_exp, count, "Count of tokens not equal");
     }
 
     fn get_ident(ident: &str, val: &str) -> Vec<Token> {
