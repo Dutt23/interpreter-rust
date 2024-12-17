@@ -2,7 +2,7 @@ use std::str::FromStr;
 
 use crate::token::{Token, TokenKind};
 
-struct Lexer {
+pub struct Lexer {
     input: Vec<char>,
     position: usize,
     read_position: usize,
@@ -10,7 +10,7 @@ struct Lexer {
 }
 
 impl Lexer {
-    fn new(input: &str) -> Self {
+    pub fn new(input: &str) -> Self {
         let mut lex = Lexer {
             input: input.chars().collect(),
             position: 0,
@@ -45,15 +45,12 @@ impl Lexer {
         tk == &TokenKind::Eq || tk == &TokenKind::NotEq
     }
 
-    fn next_token(&mut self) -> Token {
+    pub fn next_token(&mut self) -> Token {
         self.skip_whitespace();
         let next_char = &self.peek_char().to_string();
         let kind = TokenKind::to_tok(&self.ch.to_string(), next_char);
         let literal = kind.to_literal(self.ch);
-        let tok = Token {
-            kind,
-            literal
-        };
+        let tok = Token { kind, literal };
 
         if Self::should_roll_fwd(&tok.kind) {
             self.read_char();
