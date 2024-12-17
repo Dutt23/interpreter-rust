@@ -39,10 +39,17 @@ impl Lexer {
             kind: TokenKind::from_str(&self.ch.to_string()).unwrap(),
             literal: self.ch.to_string(),
         };
+
+        // Clean this later
         if tok.kind == TokenKind::Illegal && Self::is_letter(self.ch) {
             let literal = self.read_identifier();
             let kind = TokenKind::lookup_ident(&literal);
-            dbg!(&literal);
+            return Token { kind, literal };
+        }
+
+        if tok.kind == TokenKind::Illegal && Self::is_num(self.ch) {
+            let literal = self.read_num();
+            let kind = TokenKind::Int;
             return Token { kind, literal };
         }
         self.read_char();
@@ -58,6 +65,21 @@ impl Lexer {
 
     fn is_letter(ch: char) -> bool {
         ch.is_ascii_alphabetic() || ch == '_'
+    }
+
+    fn is_num(ch: char) -> bool {
+        ch.is_numeric()
+    }
+
+    fn read_num(&mut self) -> String {
+        let mut num = String::new();
+
+        while Self::is_num(self.ch) {
+            num.push(self.ch);
+            self.read_char();
+        }
+
+        num
     }
 
     fn read_identifier(&mut self) -> String {
@@ -142,8 +164,8 @@ mod test {
       let result = add(five, ten);
       "#;
 
-        let mut five_ident = get_ident("5");
-        let mut ten_ident = get_ident("10");
+        let mut five_ident = get_ident("5", "five");
+        let mut ten_ident = get_ident("10", "ten");
         five_ident.append(&mut ten_ident);
         let mut expected = vec![
             Token {
@@ -203,6 +225,10 @@ mod test {
                 literal: ";".to_string(),
             },
             Token {
+                kind: TokenKind::Rbrace,
+                literal: "}".to_string(),
+            },
+            Token {
                 kind: TokenKind::Let,
                 literal: "let".to_string(),
             },
@@ -211,11 +237,11 @@ mod test {
                 literal: "result".to_string(),
             },
             Token {
-                kind: TokenKind::Ident,
-                literal: "add".to_string(),
+                kind: TokenKind::Assign,
+                literal: "=".to_string(),
             },
             Token {
-                kind: TokenKind::Lparen,
+                kind: TokenKind::Ident,
                 literal: "add".to_string(),
             },
             Token {
@@ -236,7 +262,7 @@ mod test {
             },
             Token {
                 kind: TokenKind::Rparen,
-                literal: "ten".to_string(),
+                literal: ")".to_string(),
             },
             Token {
                 kind: TokenKind::Semicolon,
@@ -253,11 +279,15 @@ mod test {
                 "Wrong kind given at idx {} for kind expected {:?} and actual {:?}",
                 idx, exp_token.kind, recv_token.kind
             );
-            assert_eq!(exp_token.literal, recv_token.literal);
+            assert_eq!(
+                exp_token.literal, recv_token.literal,
+                "Wrong literal given at idx {} for literal expected {:?} and actual {:?}",
+                idx, exp_token.literal, recv_token.literal
+            );
         }
     }
 
-    fn get_ident(ident: &str) -> Vec<Token> {
+    fn get_ident(ident: &str, val: &str) -> Vec<Token> {
         return vec![
             Token {
                 kind: TokenKind::Let,
@@ -265,7 +295,7 @@ mod test {
             },
             Token {
                 kind: TokenKind::Ident,
-                literal: "five".to_string(),
+                literal: val.to_string(),
             },
             Token {
                 kind: TokenKind::Assign,
