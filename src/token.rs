@@ -34,6 +34,11 @@ pub enum TokenKind {
 
     Function,
     Let,
+    True,
+    False,
+    If,
+    Else,
+    Return,
 }
 
 impl TokenKind {
@@ -41,6 +46,11 @@ impl TokenKind {
         match str {
             "fn" => TokenKind::Function,
             "let" => TokenKind::Let,
+            "if" => TokenKind::If,
+            "else" => TokenKind::Else,
+            "return" => TokenKind::Return,
+            "true" => TokenKind::True,
+            "false" => TokenKind::False,
             _ => TokenKind::Ident,
         }
     }
@@ -65,6 +75,9 @@ impl FromStr for TokenKind {
             "}" => Ok(self::TokenKind::Rbrace),
             "fn" => Ok(self::TokenKind::Function),
             "let" => Ok(self::TokenKind::Let),
+            "if" => Ok(self::TokenKind::If),
+            "else" => Ok(self::TokenKind::Else),
+            "return" => Ok(self::TokenKind::Return),
             "," => Ok(self::TokenKind::Comma),
             ";" => Ok(self::TokenKind::Semicolon),
             "\0" => Ok(self::TokenKind::Eof),
