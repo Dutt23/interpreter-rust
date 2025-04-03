@@ -5,6 +5,7 @@ use repl::start;
 pub mod lexer;
 pub mod repl;
 pub mod token;
+pub mod ast;
 
 fn main() {
     println!("Hello, world!");
