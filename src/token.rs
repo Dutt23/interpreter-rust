@@ -1,13 +1,14 @@
 use std::{fmt::write, str::FromStr};
 
-#[derive(PartialEq, Debug)]
+#[derive(PartialEq, Debug, Default, Clone)]
 pub struct Token {
     pub kind: TokenKind,
     pub literal: String,
 }
 
-#[derive(PartialEq, Debug)]
+#[derive(PartialEq, Debug, Default, Clone)]
 pub enum TokenKind {
+    #[default]
     Illegal,
     Eof,
 
