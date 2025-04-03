@@ -1,4 +1,4 @@
-use crate::{lexer::Lexer, token::Token};
+use crate::{ast::Program, lexer::Lexer, token::Token};
 
 struct Parser {
   lexer: Lexer,
@@ -24,5 +24,9 @@ impl Parser {
    fn next_token(&mut self){ 
     self.curr_token = self.peek_token.clone();
     self.peek_token = self.lexer.next_token();
+   }
+
+   fn parse_program(&mut self) -> Option<Program> {
+    None
    }
 }
